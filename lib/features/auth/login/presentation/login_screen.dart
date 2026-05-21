@@ -87,179 +87,232 @@ class _LoginScreenState extends State<LoginScreen> {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: Colors.white,
+
             body: SafeArea(
+
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 45),
 
-                    Text(
-                      "Welcome Back",
-                      style: TxtStyle.font24weight700,
-                    ),
+                child: Padding(
 
-                    const SizedBox(height: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
 
-                    Text(
-                      "We're excited to have you back, can't wait to see what you've been up to since you last logged in.",
-                      style: TxtStyle.font14weight400,
-                    ),
+                  child: Column(
 
-                    const SizedBox(height: 32),
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
-                    AppTextFeild(
-                      hintText: "Email",
-                      textEditingController: emailController,
-                    ),
+                    children: [
 
-                    const SizedBox(height: 16),
+                      const SizedBox(height: 75),
 
-                    PassTxtFeild(
-                      hintTxt: "Password",
-                      textEditingController: passwordController,
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: rememberMe,
-                          onChanged: (value) {
-                            setState(() {
-                              rememberMe = value ?? false;
-                            });
-                          },
-                        ),
-                        Text(
-                          "Remember me",
-                          style: TxtStyle.font14weight500,
-                        ),
-                        const Spacer(),
-                        Text(
-                          "Forgot Password?",
-                          style: TxtStyle.font12weight400.copyWith(
-                            color: ColorManager.blue,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    state is LoginLoadingState
-                        ? const Center(child: CircularProgressIndicator())
-                        : AppButton(
-                      buttonTxt: "Login",
-                      function: () async {
-                        await saveOrClearData();
-
-                        context.read<LoginCubit>().login(
-                          LoginModel(
-                            email: emailController.text.trim(),
-                            password: passwordController.text,
-                          ),
-                        );
-                      },
-                    ),
-
-                    const SizedBox(height: 40),
-
-                    Row(
-                      children: [
-                        Expanded(child: Divider(color: Colors.grey.shade300)),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Text(
-                            "Or sign in with",
-                            style: TxtStyle.font12weight400,
-                          ),
-                        ),
-                        Expanded(child: Divider(color: Colors.grey.shade300)),
-                      ],
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        socialCircle("G"),
-                        const SizedBox(width: 24),
-                        socialCircle("f"),
-                        const SizedBox(width: 24),
-                        socialCircle(""),
-                      ],
-                    ),
-
-                    const SizedBox(height: 32),
-
-                    Center(
-                      child: Text(
-                        "By logging, you agree to our Terms & Conditions\nand Privacy Policy.",
-                        textAlign: TextAlign.center,
-                        style: TxtStyle.font12weight400,
+                      Text(
+                        "Welcome Back",
+                        style: TxtStyle.font24weight700,
                       ),
-                    ),
 
-                    const SizedBox(height: 24),
+                      const SizedBox(height: 20),
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Don’t have an account yet? ",
-                          style: TxtStyle.font12weight400,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RegisterScreen(),
-                              ),
-                            );
-                          },
-                          child: Text(
-                            "Sign Up",
+                      Text(
+                        "We're excited to have you back, can't wait to see what you've been up to since you last logged in.",
+                        style: TxtStyle.font14weight400,
+                      ),
+
+                      const SizedBox(height: 50),
+
+                      AppTextFeild(
+                        hintText: "Email",
+                        textEditingController: emailController,
+                      ),
+
+                      const SizedBox(height: 22),
+
+                      PassTxtFeild(
+                        textEditingController: passwordController,
+                        hintTxt: "Password",
+                      ),
+
+                      const SizedBox(height: 18),
+
+                      Row(
+
+                        children: [
+
+                          Checkbox(value: rememberMe,
+                            onChanged: (value) {
+
+                              setState(() {
+                                rememberMe = value ?? false;
+                              });
+                            },
+                          ),
+                          Text(
+                            "Remember me",
+                            style: TxtStyle.font14weight500,
+                          ),
+                          const Spacer(),
+                          Text(
+                            "Forgot Password?",
+                            style: TxtStyle.font12weight400.copyWith(
+                              color: ColorManager.blue,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 40),
+
+                      state is LoginLoadingState
+
+                          ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+
+                          : AppButton(
+                        buttonTxt: "Login",
+                        function: () async {
+                          await saveOrClearData();
+
+                          context.read<LoginCubit>().login(
+                            LoginModel(
+                              email: emailController.text.trim(),
+                              password: passwordController.text,
+                            ),
+                          );
+                        },
+                      ),
+
+                      const SizedBox(height: 65),
+
+                      Row(
+
+                        children: [
+
+                          Expanded(
+                            child: Divider(
+                              color: Colors.grey.shade300,
+                            ),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              "Or sign in with",
+                              style: TxtStyle.font12weight400grey,
+                            ),
+                          ),
+
+                          Expanded(
+                            child: Divider(
+                              color: Colors.grey.shade300,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 38),
+
+                      Row(
+
+                        mainAxisAlignment: MainAxisAlignment.center,
+
+                        children: [
+
+                          Image.asset(
+                            "assets/images/google.png",
+                            width: 52,
+                            height: 52,
+                          ),
+
+                          const SizedBox(width: 28),
+
+                          Image.asset(
+                            "assets/images/facebook.png",
+                            width: 52,
+                            height: 52,
+                          ),
+
+                          const SizedBox(width: 28),
+
+                          Image.asset(
+                            "assets/images/apple.png",
+                            width: 52,
+                            height: 52,
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 50),
+
+                      Row(
+
+                        mainAxisAlignment: MainAxisAlignment.center,
+
+                        children: [
+
+                          Text(
+                            "By logging, you agree to our ",
+                            style: TxtStyle.font12weight400black,
+                          ),
+
+                          Text(
+                            "Terms & Conditions",
                             style: TxtStyle.font12weight400.copyWith(
                               color: ColorManager.blue,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
 
-                    const SizedBox(height: 20),
-                  ],
+                      const SizedBox(height: 6),
+
+                      Center(
+
+                        child: Text(
+                          "and PrivacyPolicy.",
+                          style: TxtStyle.font12weight400black,
+                        ),
+                      ),
+
+                      const SizedBox(height: 32),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Don't have an account yet? ",
+                            style: TxtStyle.font12weight400black,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RegisterScreen(),
+                                ),
+                              );
+                            },
+
+                            child: Text(
+
+                              "Create account ",
+
+                              style: TxtStyle.font12weight400.copyWith(
+                                color: ColorManager.blue,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 35),
+                    ],
+                  ),
                 ),
               ),
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget socialCircle(String text) {
-    return Container(
-      width: 48,
-      height: 48,
-      decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
       ),
     );
   }

@@ -16,6 +16,12 @@ class TxtStyle{
       color: ColorManager.blue
 
   );
+  static final TextStyle font12weight400black = TextStyle(
+      fontWeight: FontWeight.w400,
+      fontSize: 12,
+      color: Colors.black
+
+  );
   static final TextStyle font24weight700 = TextStyle(
       fontWeight: FontWeight.w700,
       fontSize: 24,
@@ -32,6 +38,12 @@ class TxtStyle{
       fontWeight: FontWeight.w400,
       fontSize: 14,
       color: Color.fromRGBO(117, 117, 117, 1)
+
+  );
+  static final TextStyle font12weight400grey = TextStyle(
+      fontWeight: FontWeight.w200,
+      fontSize: 12,
+      color: Color.fromRGBO(158, 158, 158, 1)
 
   );
   static final TextStyle font18weigh700 = TextStyle(
