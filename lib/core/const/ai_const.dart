@@ -6,5 +6,5 @@ class APIConst {
   static const String doctor = "/doctor/index";
   static const String searchDoctor = "/doctor/doctor-search";
   static const String doctorr = "/doctor/index";
-
+  static const String showDoctor = "/doctor/show";
 }

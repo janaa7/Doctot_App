@@ -13,7 +13,10 @@ class DoctorSpeciality extends StatelessWidget {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
         if (state is HomeLoadingState) {
-          return const Center(child: CircularProgressIndicator());
+          return const SizedBox(
+            height: 86,
+            child: Center(child: CircularProgressIndicator()),
+          );
         } else if (state is HomeSuccessState) {
           return SizedBox(
             height: 86,
@@ -22,10 +25,14 @@ class DoctorSpeciality extends StatelessWidget {
               itemCount: state.homeData.length,
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: const EdgeInsets.only(right: 12),
+                  padding: const EdgeInsets.only(right: 18),
                   child: Column(
                     children: [
-                      Image.asset("assets/logo/general_icon.png"),
+                      Image.asset(
+                        "assets/logo/general_icon.png",
+                        height: 52,
+                        width: 52,
+                      ),
                       const SizedBox(height: 6),
                       Text(
                         state.homeData[index].name ?? "",
@@ -41,11 +48,9 @@ class DoctorSpeciality extends StatelessWidget {
           return Text(
             state.errorMessage,
             style: TxtStyle.font12weight400,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
           );
         } else {
-          return const SizedBox(height: 10);
+          return const SizedBox(height: 86);
         }
       },
     );
