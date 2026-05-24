@@ -1,8 +1,8 @@
 import 'package:doctor/core/utils/colors_manager.dart';
 import 'package:doctor/core/utils/txt_style.dart';
 import 'package:doctor/features/auth/get_all_doctor/data/get_all_doctor_model.dart';
-import 'package:doctor/features/auth/get_all_doctor/logic/doctor_details_cubit.dart';
-import 'package:doctor/features/auth/get_all_doctor/logic/doctor_details_state.dart';
+import 'package:doctor/features/auth/get_all_doctor/logic/get_all_doctor_cubit.dart';
+import 'package:doctor/features/auth/get_all_doctor/logic/get_all_doctor_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,22 +21,21 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-      DoctorDetailsCubit()..getDoctorDetails(doctorId: widget.doctorId),
+      create: (_) => GetAllDoctorCubit()..getDoctorDetails(widget.doctorId),
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: BlocBuilder<DoctorDetailsCubit, DoctorDetailsStates>(
+        body: BlocBuilder<GetAllDoctorCubit, GetAllDoctorState>(
           builder: (context, state) {
-            if (state is DoctorDetailsLoadingState) {
+            if (state is GetAllDoctorLoadingState) {
               return const Center(child: CircularProgressIndicator());
             }
 
-            if (state is DoctorDetailsErrorState) {
+            if (state is GetAllDoctorErrorState) {
               return Center(child: Text(state.errorMessage));
             }
 
-            if (state is DoctorDetailsSuccessState) {
-              final doctor = state.doctor;
+            if (state is GetAllDoctorSuccessState) {
+              final doctor = state.doctorResponse.data.first;
 
               return SafeArea(
                 child: Padding(
@@ -45,7 +44,6 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 18),
-
                       Row(
                         children: [
                           InkWell(
@@ -63,9 +61,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                               ),
                             ),
                           ),
-
                           const Spacer(),
-
                           Expanded(
                             flex: 4,
                             child: Text(
@@ -78,9 +74,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-
                           const Spacer(),
-
                           Container(
                             width: 34,
                             height: 34,
@@ -92,13 +86,9 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                           ),
                         ],
                       ),
-
                       const SizedBox(height: 28),
-
                       doctorHeader(doctor),
-
                       const SizedBox(height: 28),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -107,9 +97,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                           tabItem("Reviews", 2),
                         ],
                       ),
-
                       Divider(color: Colors.grey.shade300, height: 1),
-
                       Expanded(
                         child: selectedIndex == 0
                             ? aboutTab(doctor)
@@ -117,7 +105,6 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                             ? locationTab(doctor)
                             : reviewsTab(),
                       ),
-
                       SizedBox(
                         width: double.infinity,
                         height: 54,
@@ -138,7 +125,6 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 18),
                     ],
                   ),
@@ -181,9 +167,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
             fit: BoxFit.cover,
           ),
         ),
-
         const SizedBox(width: 14),
-
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,9 +178,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-
               const SizedBox(height: 5),
-
               Text(
                 "${doctor.specialization?.name ?? ""} | ${doctor.city?.name ?? ""}",
                 style: TxtStyle.font12weight400.copyWith(
@@ -206,9 +188,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-
               const SizedBox(height: 6),
-
               Text(
                 doctor.degree ?? "",
                 style: TxtStyle.font12weight400.copyWith(
@@ -219,7 +199,6 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
             ],
           ),
         ),
-
         Icon(
           Icons.chat_bubble_outline,
           color: ColorManager.blue,
@@ -264,10 +243,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "About me",
-            style: TxtStyle.font18weigh600.copyWith(fontSize: 15),
-          ),
+          Text("About me", style: TxtStyle.font18weigh600.copyWith(fontSize: 15)),
           const SizedBox(height: 10),
           Text(
             doctor.description ?? "No description available",
@@ -276,49 +252,29 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
               color: Colors.grey,
             ),
           ),
-
           const SizedBox(height: 20),
-
-          Text(
-            "Working Time",
-            style: TxtStyle.font18weigh600.copyWith(fontSize: 15),
-          ),
+          Text("Working Time", style: TxtStyle.font18weigh600.copyWith(fontSize: 15)),
           const SizedBox(height: 10),
           Text(
             "${doctor.startTime ?? ""} - ${doctor.endTime ?? ""}",
             style: TxtStyle.font12weight400.copyWith(color: Colors.grey),
           ),
-
           const SizedBox(height: 20),
-
-          Text(
-            "Appointment Price",
-            style: TxtStyle.font18weigh600.copyWith(fontSize: 15),
-          ),
+          Text("Appointment Price", style: TxtStyle.font18weigh600.copyWith(fontSize: 15)),
           const SizedBox(height: 10),
           Text(
             "${doctor.appointPrice ?? 0} EGP",
             style: TxtStyle.font12weight400.copyWith(color: Colors.grey),
           ),
-
           const SizedBox(height: 20),
-
-          Text(
-            "Phone",
-            style: TxtStyle.font18weigh600.copyWith(fontSize: 15),
-          ),
+          Text("Phone", style: TxtStyle.font18weigh600.copyWith(fontSize: 15)),
           const SizedBox(height: 10),
           Text(
             doctor.phone ?? "No Phone",
             style: TxtStyle.font12weight400.copyWith(color: Colors.grey),
           ),
-
           const SizedBox(height: 20),
-
-          Text(
-            "Email",
-            style: TxtStyle.font18weigh600.copyWith(fontSize: 15),
-          ),
+          Text("Email", style: TxtStyle.font18weigh600.copyWith(fontSize: 15)),
           const SizedBox(height: 10),
           Text(
             doctor.email ?? "No Email",
@@ -335,10 +291,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Practice Place",
-            style: TxtStyle.font18weigh600.copyWith(fontSize: 15),
-          ),
+          Text("Practice Place", style: TxtStyle.font18weigh600.copyWith(fontSize: 15)),
           const SizedBox(height: 10),
           Text(
             doctor.address ?? "No Address",
@@ -347,37 +300,22 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
               height: 1.5,
             ),
           ),
-
           const SizedBox(height: 20),
-
-          Text(
-            "City",
-            style: TxtStyle.font18weigh600.copyWith(fontSize: 15),
-          ),
+          Text("City", style: TxtStyle.font18weigh600.copyWith(fontSize: 15)),
           const SizedBox(height: 10),
           Text(
             doctor.city?.name ?? "No City",
             style: TxtStyle.font12weight400.copyWith(color: Colors.grey),
           ),
-
           const SizedBox(height: 20),
-
-          Text(
-            "Governrate",
-            style: TxtStyle.font18weigh600.copyWith(fontSize: 15),
-          ),
+          Text("Governrate", style: TxtStyle.font18weigh600.copyWith(fontSize: 15)),
           const SizedBox(height: 10),
           Text(
             doctor.city?.governrate?.name ?? "No Governrate",
             style: TxtStyle.font12weight400.copyWith(color: Colors.grey),
           ),
-
           const SizedBox(height: 20),
-
-          Text(
-            "Location Map",
-            style: TxtStyle.font18weigh600.copyWith(fontSize: 15),
-          ),
+          Text("Location Map", style: TxtStyle.font18weigh600.copyWith(fontSize: 15)),
           const SizedBox(height: 12),
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
@@ -397,9 +335,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
     return Center(
       child: Text(
         "No reviews data from API",
-        style: TxtStyle.font12weight400.copyWith(
-          color: Colors.grey,
-        ),
+        style: TxtStyle.font12weight400.copyWith(color: Colors.grey),
       ),
     );
   }

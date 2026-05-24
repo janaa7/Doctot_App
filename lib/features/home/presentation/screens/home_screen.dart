@@ -1,5 +1,6 @@
 import 'package:doctor/core/utils/colors_manager.dart';
 import 'package:doctor/features/auth/get_all_doctor/presentation/get_all_doctor_screen.dart';
+import 'package:doctor/features/auth/get_all_doctor/presentation/doctor_search_screen.dart';
 import 'package:doctor/features/home/logic/home_cubit.dart';
 import 'package:doctor/features/home/presentation/screens/doctor_recommend.dart';
 import 'package:doctor/features/home/presentation/screens/doctor_speciality.dart';
@@ -184,17 +185,27 @@ class HomeScreen extends StatelessWidget {
 
                 Positioned(
                   top: -22,
-                  child: Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      color: ColorManager.blue,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.search,
-                      color: Colors.white,
-                      size: 32,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DoctorSearchScreen(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 64,
+                      height: 64,
+                      decoration: BoxDecoration(
+                        color: ColorManager.blue,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.search,
+                        color: Colors.white,
+                        size: 32,
+                      ),
                     ),
                   ),
                 ),

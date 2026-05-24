@@ -1,19 +1,19 @@
+import '../data/get_all_doctor_model.dart';
 
-import 'package:doctor/features/auth/get_all_doctor/data/get_all_doctor_model.dart';
+class GetAllDoctorState {}
 
-class DoctorStates{}
+class GetAllDoctorInitialState extends GetAllDoctorState {}
 
-class InitialState extends DoctorStates{}
+class GetAllDoctorLoadingState extends GetAllDoctorState {}
 
-class LoadingState extends DoctorStates{}
-
-class SuccessState extends DoctorStates{
+class GetAllDoctorSuccessState extends GetAllDoctorState {
   final DoctorResponse doctorResponse;
-  SuccessState({required this.doctorResponse});
+
+  GetAllDoctorSuccessState({required this.doctorResponse});
 }
 
-class ErrorState extends DoctorStates{
+class GetAllDoctorErrorState extends GetAllDoctorState {
   final String errorMessage;
-  ErrorState ({required this.errorMessage});
-}
 
+  GetAllDoctorErrorState({required this.errorMessage});
+}
