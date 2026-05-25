@@ -13,10 +13,13 @@ class GetAllDoctorCubit extends Cubit<GetAllDoctorState> {
   static GetAllDoctorCubit get(context) => BlocProvider.of(context);
 
   DoctorResponse? originalDoctors;
+  DoctorResponse? currentDoctors;
   Timer? debounce;
 
   List<Specialization> availableSpecializations = [];
+
   int selectedSpecializationId = 0;
+  int selectedRating = 0;
 
   Future<void> getAllDoctors() async {
     emit(GetAllDoctorLoadingState());
@@ -29,6 +32,8 @@ class GetAllDoctorCubit extends Cubit<GetAllDoctorState> {
       final doctorResponse = DoctorResponse.fromJson(response.data);
 
       originalDoctors = doctorResponse;
+      currentDoctors = doctorResponse;
+
       extractSpecializations(doctorResponse.data);
 
       emit(GetAllDoctorSuccessState(doctorResponse: doctorResponse));
@@ -60,14 +65,12 @@ class GetAllDoctorCubit extends Cubit<GetAllDoctorState> {
         },
       );
 
-      print(response.realUri);
-      print(response.data);
-
       final doctorResponse = DoctorResponse.fromJson(response.data);
+
+      currentDoctors = doctorResponse;
 
       emit(GetAllDoctorSuccessState(doctorResponse: doctorResponse));
     } catch (error) {
-      print(error);
       emit(GetAllDoctorErrorState(errorMessage: error.toString()));
     }
   }
@@ -79,9 +82,11 @@ class GetAllDoctorCubit extends Cubit<GetAllDoctorState> {
 
     debounce = Timer(const Duration(milliseconds: 250), () {
       selectedSpecializationId = 0;
+      selectedRating = 0;
 
       if (query.trim().isEmpty) {
         if (originalDoctors != null) {
+          currentDoctors = originalDoctors;
           emit(GetAllDoctorSuccessState(doctorResponse: originalDoctors!));
         } else {
           getAllDoctors();
@@ -97,6 +102,7 @@ class GetAllDoctorCubit extends Cubit<GetAllDoctorState> {
 
     if (specializationId == 0) {
       if (originalDoctors != null) {
+        currentDoctors = originalDoctors;
         emit(GetAllDoctorSuccessState(doctorResponse: originalDoctors!));
       } else {
         getAllDoctors();
@@ -116,9 +122,19 @@ class GetAllDoctorCubit extends Cubit<GetAllDoctorState> {
 
       final doctorResponse = DoctorResponse.fromJson(response.data);
 
+      currentDoctors = doctorResponse;
+
       emit(GetAllDoctorSuccessState(doctorResponse: doctorResponse));
     } catch (error) {
       emit(GetAllDoctorErrorState(errorMessage: error.toString()));
+    }
+  }
+
+  void changeRating(int rating) {
+    selectedRating = rating;
+
+    if (currentDoctors != null) {
+      emit(GetAllDoctorSuccessState(doctorResponse: currentDoctors!));
     }
   }
 

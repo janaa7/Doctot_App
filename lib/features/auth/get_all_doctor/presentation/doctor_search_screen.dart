@@ -1,9 +1,10 @@
 import 'package:doctor/core/utils/colors_manager.dart';
 import 'package:doctor/core/utils/txt_style.dart';
-import 'package:doctor/features/auth/get_all_doctor/data/get_all_doctor_model.dart';
 import 'package:doctor/features/auth/get_all_doctor/logic/get_all_doctor_cubit.dart';
 import 'package:doctor/features/auth/get_all_doctor/logic/get_all_doctor_state.dart';
-import 'package:doctor/features/auth/get_all_doctor/presentation/doctor_details_screen.dart';
+
+import 'package:doctor/features/auth/get_all_doctor/widgets/doctor_card.dart';
+import 'package:doctor/features/auth/get_all_doctor/widgets/doctor_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -69,36 +70,7 @@ class _DoctorSearchScreenState extends State<DoctorSearchScreen> {
 
                 const SizedBox(height: 26),
 
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: const Color(0xffF4F6F9),
-                          borderRadius: BorderRadius.circular(22),
-                        ),
-                        child: TextField(
-                          onChanged: (value) {
-                            getAllDoctorCubit.searchDoctors(value);
-                          },
-                          decoration: const InputDecoration(
-                            hintText: "Search",
-                            hintStyle: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                            ),
-                            prefixIcon: Icon(Icons.search, color: Colors.grey),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.only(top: 14),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 14),
-                    const Icon(Icons.tune, size: 22),
-                  ],
-                ),
+                DoctorSearchBar(cubit: getAllDoctorCubit),
 
                 const SizedBox(height: 24),
 
@@ -109,20 +81,28 @@ class _DoctorSearchScreenState extends State<DoctorSearchScreen> {
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
-                          categoryItem(
-                            context: context,
+                          specialityChip(
                             title: "All",
-                            id: 0,
-                            selected: getAllDoctorCubit.selectedSpecializationId == 0,
+                            selected:
+                            getAllDoctorCubit.selectedSpecializationId == 0,
+                            onTap: () {
+                              getAllDoctorCubit
+                                  .filterDoctorBySpecialization(0);
+                            },
                           ),
                           ...getAllDoctorCubit.availableSpecializations.map(
                                 (specialization) {
-                              return categoryItem(
-                                context: context,
+                              return specialityChip(
                                 title: specialization.name ?? "",
-                                id: specialization.id ?? 0,
-                                selected: getAllDoctorCubit.selectedSpecializationId ==
+                                selected: getAllDoctorCubit
+                                    .selectedSpecializationId ==
                                     specialization.id,
+                                onTap: () {
+                                  getAllDoctorCubit
+                                      .filterDoctorBySpecialization(
+                                    specialization.id ?? 0,
+                                  );
+                                },
                               );
                             },
                           ),
@@ -132,7 +112,7 @@ class _DoctorSearchScreenState extends State<DoctorSearchScreen> {
                   },
                 ),
 
-                const SizedBox(height: 22),
+                const SizedBox(height: 20),
 
                 Expanded(
                   child: BlocBuilder<GetAllDoctorCubit, GetAllDoctorState>(
@@ -164,11 +144,12 @@ class _DoctorSearchScreenState extends State<DoctorSearchScreen> {
                             const SizedBox(height: 16),
                             Expanded(
                               child: ListView.builder(
+                                padding: const EdgeInsets.only(bottom: 90),
                                 itemCount: doctors.length,
                                 itemBuilder: (context, index) {
-                                  final doctor = doctors[index];
-
-                                  return doctorCard(context, doctor);
+                                  return DoctorCard(
+                                    doctor: doctors[index],
+                                  );
                                 },
                               ),
                             ),
@@ -184,20 +165,18 @@ class _DoctorSearchScreenState extends State<DoctorSearchScreen> {
             ),
           ),
         ),
+        bottomNavigationBar: bottomNavBar(),
       ),
     );
   }
 
-  Widget categoryItem({
-    required BuildContext context,
+  Widget specialityChip({
     required String title,
-    required int id,
     required bool selected,
+    required VoidCallback onTap,
   }) {
     return InkWell(
-      onTap: () {
-        getAllDoctorCubit.filterDoctorBySpecialization(id);
-      },
+      onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(right: 12),
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -218,108 +197,60 @@ class _DoctorSearchScreenState extends State<DoctorSearchScreen> {
     );
   }
 
-  Widget doctorCard(BuildContext context, Doctor doctor) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DoctorDetailsScreen(
-              doctorId: doctor.id ?? 0,
-            ),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 14),
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
+  Widget bottomNavBar() {
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.topCenter,
+      children: [
+        Container(
+          height: 82,
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: doctor.photo != null && doctor.photo!.isNotEmpty
-                  ? Image.network(
-                doctor.photo!,
-                width: 88,
-                height: 88,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Image.asset(
-                    "assets/images/home_doctor.png",
-                    width: 88,
-                    height: 88,
-                    fit: BoxFit.cover,
-                  );
-                },
-              )
-                  : Image.asset(
-                "assets/images/home_doctor.png",
-                width: 88,
-                height: 88,
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    doctor.name ?? "",
-                    style: TxtStyle.font18weigh600.copyWith(fontSize: 15),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    "${doctor.specialization?.name ?? ""} | ${doctor.city?.name ?? ""}",
-                    style: TxtStyle.font12weight400.copyWith(
-                      fontSize: 11,
-                      color: Colors.black54,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const Icon(Icons.home_outlined, color: Colors.black),
+              Stack(
+                children: const [
+                  Icon(Icons.chat_bubble_outline, color: Colors.black),
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: CircleAvatar(
+                      radius: 4,
+                      backgroundColor: Colors.red,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                        size: 17,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        "4.8",
-                        style: TxtStyle.font12weight400.copyWith(fontSize: 11),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        "(4,279 reviews)",
-                        style: TxtStyle.font12weight400.copyWith(
-                          fontSize: 11,
-                          color: Colors.black45,
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(width: 65),
+              Icon(
+                Icons.calendar_month,
+                color: ColorManager.blue,
+              ),
+              const CircleAvatar(
+                radius: 12,
+                backgroundImage: AssetImage("assets/images/profile.png"),
+              ),
+            ],
+          ),
         ),
-      ),
+        Positioned(
+          top: -22,
+          child: Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: ColorManager.blue,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.search,
+              color: Colors.white,
+              size: 32,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
