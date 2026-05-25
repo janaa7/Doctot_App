@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CacheHelper {
   static SharedPreferences? _prefs;
-
+  static late SharedPreferences sharedPreferences;
   static Future init() async {
     _prefs = await SharedPreferences.getInstance();
   }
@@ -17,5 +17,8 @@ class CacheHelper {
 
   static Future clearToken() async {
     await _prefs?.remove('token');
+  }
+  static String? getUserName() {
+    return sharedPreferences.getString("userName");
   }
 }

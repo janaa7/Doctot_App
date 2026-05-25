@@ -13,25 +13,47 @@ class LoginCubit extends Cubit<LoginState> {
   LoginCubit() : super(LoginInitialState());
 
 
-
-  Future login (LoginModel user) async{
+  Future login(LoginModel user) async {
     emit(LoginLoadingState());
+
     try {
+
       final response = await DioHelper.postData(
         url: APIConst.login,
         data: user.toJson(),
       );
-      if(response.statusCode == 200){
+
+      print("LOGIN RESPONSE:");
+      print(response.data);
+
+      if (response.statusCode == 200) {
+
         final auth = AuthResponse.fromJson(response.data);
+
         await CacheHelper.saveToken(auth.data!.token!);
-        emit(LoginSuccessState(
-          token: auth.data!.token!,
-          userName: auth.data!.username!,
-        ));
+
+        emit(
+          LoginSuccessState(
+            token: auth.data!.token!,
+            userName: auth.data!.username!,
+          ),
+        );
       }
-    }catch(e){
-      print("======================$e==================");
-      emit(LoginErrorState(errorMessage: e.toString()));
-    }
-  }
-}
+
+    } catch (e) {
+      if (e is DioException) {
+        print("LOGIN ERROR STATUS:");
+        print(e.response?.statusCode);
+
+        print("LOGIN ERROR DATA:");
+        print(e.response?.data);
+      } else {
+        print(e.toString());
+      }
+
+      emit(
+        LoginErrorState(
+          errorMessage: e.toString(),
+        ),
+      );
+    }}}

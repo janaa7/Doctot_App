@@ -1,5 +1,6 @@
 import 'package:doctor/core/utils/colors_manager.dart';
 import 'package:doctor/core/utils/txt_style.dart';
+import 'package:doctor/features/appointments/presentation/my_appointments_screen.dart';
 import 'package:doctor/features/auth/get_all_doctor/data/get_all_doctor_model.dart';
 import 'package:doctor/features/auth/get_all_doctor/logic/get_all_doctor_cubit.dart';
 import 'package:doctor/features/auth/get_all_doctor/logic/get_all_doctor_state.dart';
@@ -115,7 +116,16 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                               borderRadius: BorderRadius.circular(14),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BookAppointmentScreen(
+                                  doctor: doctor,
+                                ),
+                              ),
+                            );
+                          },
                           child: const Text(
                             "Make An Appointment",
                             style: TextStyle(

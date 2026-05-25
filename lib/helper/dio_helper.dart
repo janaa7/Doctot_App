@@ -38,7 +38,7 @@ class DioHelper {
 
   static Future<Response> postData({
     required String url,
-    Map<String, dynamic>? data,
+    dynamic data,
     Map<String, dynamic>? query,
   }) async {
     final token = CacheHelper.getToken();

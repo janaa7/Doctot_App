@@ -6,6 +6,7 @@ import 'package:doctor/features/home/presentation/screens/doctor_recommend.dart'
 import 'package:doctor/features/home/presentation/screens/doctor_speciality.dart';
 import 'package:doctor/features/home/presentation/screens/doctor_speciality_screen.dart';
 import 'package:doctor/features/home/presentation/screens/nearby_widget.dart';
+import 'package:doctor/features/profile/presentation/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -174,10 +175,21 @@ class HomeScreen extends StatelessWidget {
                         color: ColorManager.blue,
                       ),
 
-                      const CircleAvatar(
-                        radius: 12,
-                        backgroundImage:
-                        AssetImage("assets/images/profile.png"),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ProfileScreen(),
+                            ),
+                          );
+                        },
+                        child: const CircleAvatar(
+                          radius: 12,
+                          backgroundImage: AssetImage(
+                            "assets/images/profile.png",
+                          ),
+                        ),
                       ),
                     ],
                   ),
